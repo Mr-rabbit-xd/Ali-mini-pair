@@ -95,7 +95,7 @@ export default function Dashboard() {
         <footer className="mt-16 pb-4 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
           <div className="text-center">
             <p className="text-xs text-white/50">
-              create by 𝘴น𝚖𝔞ꪦ_𝗿ǿⲩ 🍉 𝐀ɭīī 𝐈𝐍𝐗īī𝐃𝐄 ©2025
+              𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𓋜-𝐑ᴀ፝֟፝֟ʙʙɪᴛ/>𝟑ن𓂃
             </p>
           </div>
         </footer>
