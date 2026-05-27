@@ -9,7 +9,7 @@ export default function TopBar() {
             <Smartphone className="h-6 w-6 text-white" />
           </div>
           <h1 className="text-xl font-bold text-white bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-          𝐀ɭīī 𝐌𝐃 𝐁❍𝐓 <span className="text-pink-400">❤️‍🩹</span>
+          𝐑𝐀𝐁𝐁𝐈𝐓 𝐗𝐌𝐃  <span className="text-pink-400">❤️‍🩹</span>
           </h1>
         </div>
       </div>
