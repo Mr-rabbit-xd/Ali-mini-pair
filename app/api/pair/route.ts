@@ -17,6 +17,13 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // 3 minute timeout
+    const controller = new AbortController();
+
+    const timeout = setTimeout(() => {
+      controller.abort();
+    }, 180000);
+
     const response = await fetch(
       `${API_URL}?number=${encodeURIComponent(number)}`,
       {
@@ -24,9 +31,12 @@ export async function GET(request: NextRequest) {
         headers: {
           'Content-Type': 'application/json',
         },
-        cache: 'no-store'
+        cache: 'no-store',
+        signal: controller.signal
       }
     );
+
+    clearTimeout(timeout);
 
     const data = await response.json();
 
@@ -51,6 +61,17 @@ export async function GET(request: NextRequest) {
     );
 
   } catch (error) {
+
+    if (error instanceof Error && error.name === "AbortError") {
+      return NextResponse.json(
+        {
+          status: "error",
+          message: "Request timeout after 3 minutes"
+        },
+        { status: 408 }
+      );
+    }
+
     console.error("Pair API Error:", error);
 
     return NextResponse.json(
