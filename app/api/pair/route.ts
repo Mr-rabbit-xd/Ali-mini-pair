@@ -1,46 +1,66 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const WHATSAPP_API_URL = process.env.WHATSAPP_API_URL || "http://yamanote.proxy.rlwy.net:17090";
+const API_URL = "https://rabbitapi.zone.id/api/pair";
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const code = searchParams.get('code');
-    
-    if (!code) {
+    const number = searchParams.get('number');
+
+    if (!number) {
       return NextResponse.json(
-        { status: "error", message: "Phone number code is required" },
+        {
+          status: "error",
+          message: "Phone number is required"
+        },
         { status: 400 }
       );
     }
 
-    const response = await fetch(`${WHATSAPP_API_URL}/pair?code=${code}`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    });
+    const response = await fetch(
+      `${API_URL}?number=${encodeURIComponent(number)}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cache: 'no-store'
+      }
+    );
 
     const data = await response.json();
 
-    if (data.status === "error") {
-      return NextResponse.json(data, { status: response.ok ? 200 : response.status });
-    }
-
-    if (!response.ok) {
+    if (!response.ok || !data.success) {
       return NextResponse.json(
-        { 
-          status: "error", 
-          message: `Upstream API error: ${response.statusText}` 
+        {
+          status: "error",
+          message: data.message || "Failed to generate pair code"
         },
-        { status: response.status }
+        { status: response.status || 500 }
       );
     }
 
-    return NextResponse.json(data, { status: 200 });
-  } catch (error) {
-    console.error("Error pairing:", error);
-    const message = error instanceof Error ? error.message : "Failed to pair number";
     return NextResponse.json(
-      { status: "error", message },
+      {
+        status: "success",
+        creator: data.creator,
+        number: data.result.number,
+        pairingCode: data.result.code
+      },
+      { status: 200 }
+    );
+
+  } catch (error) {
+    console.error("Pair API Error:", error);
+
+    return NextResponse.json(
+      {
+        status: "error",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Unknown error"
+      },
       { status: 500 }
     );
   }
